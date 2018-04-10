@@ -1,27 +1,22 @@
-load('data_build_stories.mat')
 a2.clear()
+load('data_build_stories.mat')
 
 %% ploting data
 X = data_build_stories(:,1);
 y = data_build_stories(:,2);
 scatter(X,y,'.');
 
-%% calculate predicted number
-B = calcB(X,y);
+%% calculate beta
+B = a2.calcB(X,y);
 
-%% calculate J(B)
+%% calculate J(B) by normal equation and gradiant descent
 Normal_cost = J(X,y,B);
-calcIteration(X,y,0.0000001,Normal_cost)
-calcIterationWN(X,y,0.0000001,Normal_cost)%TODO
 %Gradiant_cost = GradiantDNN(X,y,0.0000001,5000000);
 %Gradiantf_cost = GradiantDWN(X,y,0.0000001,5000000);
 
-%% Beta calculation using Normal equation
-function Beta = calcB(X,y)
-n = length(X);
-X2 = [ones(n,1),X];
-Beta = ((X2.'*X2)^(-1))*(X2.')*y;
-end
+%% calcualte and print predicated value
+calcIteration(X,y,0.0000001,Normal_cost)
+calcIterationWN(X,y,0.0000001,Normal_cost)
 
 %% J(B) calculation
 function mse = J(X,y,B)
@@ -106,12 +101,12 @@ iter = i;
 end
 
 %% calc best iteration number with normalization
-function iter = calcIterationWN(X,y,a,NC)
+function itera = calcIterationWN(X,y,a,NC)
 B = [0;0];
 n = length(X);
 M = mean(X);
 S = std(X);
-cost=0;
+cost = J(X,y,B);
 XX = [ones(n,1),ones(n,1)];
 for i=1:length(X)
     XX(i,2) = (X(i)-M)/S;
@@ -122,7 +117,7 @@ while abs(NC-cost) > (NC*0.01)
     x=x+1;
     next_B = B-(a*(XX.')*((XX*B)-y));
     new_cost = J(X,y,next_B);
-    if new_cost>cost
+    if new_cost > cost
         break;
     else
       B = next_B; 
@@ -132,7 +127,7 @@ end
 
 p = predict(B(1,1),B(2,1),((900-M)/S));
 disp("Prediction of 900 is " + p);
-iter = x;
+itera = x;
 end
 
 %% predict
