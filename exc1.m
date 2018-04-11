@@ -4,19 +4,29 @@ load('data_build_stories.mat')
 %% ploting data
 X = data_build_stories(:,1);
 y = data_build_stories(:,2);
+subplot(2,1,1)
 scatter(X,y,'.');
-
+hold on
 %% calculate beta
 B = a2.calcB(X,y);
 
 %% calculate J(B) by normal equation and gradiant descent
 Normal_cost = J(X,y,B);
+xval=linspace(min(X),max(X),2);
+Line = zeros();
+for i=1:2
+    Line(i)= predict(B(1,1),B(2,1),xval(i));
+end
+
+plot(xval,Line');
+
+
 %Gradiant_cost = GradiantDNN(X,y,0.0000001,5000000);
-%Gradiantf_cost = GradiantDWN(X,y,0.0000001,5000000);
+%Gradiantf_cost = GradiantDWN(X,y,0.0000001,5000000); 
 
 %% calcualte and print predicated value
 calcIteration(X,y,0.0000001,Normal_cost)
-calcIterationWN(X,y,0.0000001,Normal_cost)
+calcIterationWN(X,y,0.01)
 
 %% J(B) calculation
 function mse = J(X,y,B)
@@ -39,10 +49,10 @@ while N>i
     i=i+1;
     next_B = B-(a*(X2.')*((X2*B)-y));
     new_cost = J(X,y,next_B);
+    B = next_B; 
     if new_cost>cost
         break;
     else
-      B = next_B; 
       cost = new_cost;
     end 
 end
@@ -66,14 +76,10 @@ while N>i
     i=i+1;
     next_B = B-(a*(XX.')*((XX*B)-y));
     new_cost = J(X,y,next_B);
-    if new_cost>cost
-        break;
-    else
-      B = next_B; 
-      cost = new_cost;
-    end 
+    B = next_B; 
+    cost = new_cost;
 end
-NB = J(X,y,B);
+NB = J(XX,y,B);
 end
 
 %% calc best iteration number
@@ -87,10 +93,10 @@ while abs(NC-cost)> (NC*0.01)
     i=i+1;
     next_B = B-(a*(X2.')*((X2*B)-y));
     new_cost = J(X,y,next_B);
+    B = next_B;
     if new_cost>cost
         break;
-    else
-      B = next_B; 
+    else 
       cost = new_cost;
     end 
 end
@@ -98,36 +104,55 @@ end
 p = predict(B(1,1),B(2,1),900);
 disp("(no normalization)Prediction of 900 is " + p);
 iter = i;
+
+xval=linspace(min(X),max(X),2);
+Line = zeros();
+for i=1:2
+    Line(i)= predict(B(1,1),B(2,1),xval(i));
+end
+subplot(2,1,1)
+plot(xval,Line');
+hold on
 end
 
 %% calc best iteration number with normalization
-function itera = calcIterationWN(X,y,a,NC)
-B = [0;0];
+function itera = calcIterationWN(X,y,a)
 n = length(X);
 M = mean(X);
 S = std(X);
-cost = J(X,y,B);
-XX = [ones(n,1),ones(n,1)];
+XX = ones(n,1);
 for i=1:length(X)
-    XX(i,2) = (X(i)-M)/S;
+    XX(i) = (X(i)-M)/S;
 end
+B = a2.calcB(XX,y);
+XX=[ones(n,1),XX];
+NC = J(XX,y,B);
+B=[0;0];
+cost = J(XX,y,B);
 
 x=0;
+
 while abs(NC-cost) > (NC*0.01)
     x=x+1;
     next_B = B-(a*(XX.')*((XX*B)-y));
-    new_cost = J(X,y,next_B);
-    if new_cost > cost
-        break;
-    else
-      B = next_B; 
-      cost = new_cost;
-    end 
+    new_cost = J(XX,y,next_B);
+    B = next_B;
+    cost = new_cost;
 end
 
 p = predict(B(1,1),B(2,1),((900-M)/S));
 disp("Prediction of 900 is " + p);
 itera = x;
+Line = zeros;
+xval=linspace(min(XX(:,2)),max(XX(:,2)),2);
+
+for i=1:2
+    Line(i)= predict(B(1,1),B(2,1),xval(i));
+end
+subplot(2,1,2)
+scatter(XX(:,2),y,'.');
+hold on
+plot(xval,Line');
 end
 
 %% predict
