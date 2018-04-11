@@ -21,7 +21,8 @@ pred = predict(X1,B);
 
 %% cost
 Normal_cost = J(X,y,B);
-GD = calcIterationWN(X,y,0.01);
+[p,GD] = calcIterationWN(X,y,0.001);
+
 
 
 %% normal equation.
@@ -43,18 +44,18 @@ end
 end
 
 %% gradiant descent
-function itera = calcIterationWN(X,y,a)
+function [p,itera] = calcIterationWN(X,y,a)
 n = length(X);
 M = mean(X);
 S = std(X);
 XX = [ones(n,1),ones(n,1),ones(n,1),ones(n,1),ones(n,1),ones(n,1)];
-for i=1:length(X)
-    XX(i,1) = (X(i,1)-M)/S;
-    XX(i,2) = (X(i,2)-M)/S;
-    XX(i,3) = (X(i,3)-M)/S;
-    XX(i,4) = (X(i,4)-M)/S;
-    XX(i,5) = (X(i,5)-M)/S;
-    XX(i,6) = (X(i,6)-M)/S;    
+for i=1:size(X,1)
+    XX(i,1) = (X(i,1)-M(1))/S(1);
+    XX(i,2) = (X(i,2)-M(2))/S(2);
+    XX(i,3) = (X(i,3)-M(3))/S(3);
+    XX(i,4) = (X(i,4)-M(4))/S(4);
+    XX(i,5) = (X(i,5)-M(5))/S(5);
+    XX(i,6) = (X(i,6)-M(6))/S(6);    
 end
 
 B = a2.calcB(XX,y);
@@ -68,16 +69,12 @@ while abs(NC-cost) > (NC*0.01)
     x=x+1;
     next_B = B-(a*(XX.')*((XX*B)-y));
     new_cost = J(XX,y,next_B);
-    if new_cost < cost
-        B = next_B;
-        cost = new_cost;
-    else
-        break
-    end
-    
+    B = next_B;
+    cost = new_cost;
 end
 
-%p = predict(B(1,1),B(2,1),((900-M)/S));
-%disp("Prediction of 900 is " + p);
+Z =[(2432-M(1))/S(1); (1607-M(2))/S(2); (1683-M(3))/S(3); (8-M(4))/S(4); (8-M(5))/S(5); (256-M(6))/S(6)];
+p = predict(Z,B);
+disp("Prediction by  GD is " + p);
 itera = x;
 end
