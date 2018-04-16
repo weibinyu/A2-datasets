@@ -21,7 +21,7 @@ pred = predict(X1,B);
 
 %% cost
 Normal_cost = J(X,y,B);
-[p,GD] = calcIterationWN(X,y,0.001);
+[p,GD] = calcIterationWN(X,y,0.01);
 
 
 
