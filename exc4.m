@@ -65,6 +65,6 @@ end
 disp("Number of iteration = "+itera+" alpha = "+a);
 plot(iterList,costList); %% plot cost as function over iterations
 
-%plotFootball(X,y,beta,M,S);
-beta = beta;
+plotFootball(X,y,beta,M,S);
+
 end
