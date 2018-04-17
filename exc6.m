@@ -12,10 +12,16 @@ hold off
 ylim([-1,2])
 
 %% feature mapping
-mapped = mapFeature(X1,X2,2);
-B=[0;0;0;0;0;0;];
+
+d = 5;
+B = initB(d);
+mapped = mapFeature(X1,X2,d);
+
 [beta,itera] = GD(mapped,y,B,0.01);
-plot2dContour(beta,mapped,y,2);
+plot2dContour(beta,mapped,y,d);
+
+%options = optimset('GradObj', 'on', 'MaxIter', 1000,'Display','on');
+%[theta, final_cost] = fminunc(@(t)(logCost(t, mapped, y)), init_beta, options);
 
 %% gradiant descent
 function [beta,itera] = GD(X,y,B,a)
@@ -71,4 +77,21 @@ z = z'; % important to transpose z before calling contour
 % Plot z = 0. Notice you need to specify the range [0, 0]
 contour(x0, y0, z, [0, 0], 'LineWidth', 2)
 
+end
+
+%% init B
+function beta = initB(d)
+B=[];
+for n=1:d
+B=[B;zeros(3,1)];
+end
+ex = d-2;
+if ex > 0
+    ex = linspace(min(1),max(ex),ex);
+    ex = sum(ex);
+    for i=1:ex
+        B=[B;[0;]];
+    end
+end
+beta = B;
 end
