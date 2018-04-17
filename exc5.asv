@@ -16,14 +16,23 @@ end
 
 % I have selected 10 set data as test data and 673 set data as training
 % reason for this is i am told that more training makes more accurate model
-train = data(1:303,:);
-test = data(304:683,:);
+train = data(1:673,:);
+test = data(674:683,:);
 
 %% train model and calculate error 
 [B,itera,cost] = findB(train(:,1:9),train(:,10),0.005);
 
-trainE = calculateE(train,B);
-testE = calculateE(test,B);
+n = length(test(:,1:9));
+XX = [ones(n,1),normalize(test(:,1:9))];
+pre = a2.sigmoid(XX*B);
+p = round(pre);
+error = 0;
+for i=1:length(p)
+    if test(i,10) ~= p(i)
+        error = error+1;
+    end
+end
+
 
 %% function
 function [beta,itera,cost] = findB(X,y,a)
@@ -71,14 +80,14 @@ end
 end
 
 %% function error calculation
-function error = calculateE(X,B)
+function error = calculateE(X)
 n = length(X(:,1:9));
 XX = [ones(n,1),normalize(X(:,1:9))];
 pre = a2.sigmoid(XX*B);
 p = round(pre);
 error = 0;
 for i=1:length(p)
-    if X(i,10) ~= p(i)
+    if tes(i,10) ~= p(i)
         error = error+1;
     end
 end

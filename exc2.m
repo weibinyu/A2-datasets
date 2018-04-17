@@ -38,9 +38,10 @@ end
 %% prediction
 function pre = predict(X,B)
 pre = B(1,1);
-for i=1:6
+for i=1:size(X,1)
    pre = pre+(B(i+1,1)*X(i,1));
 end
+
 end
 
 %% gradiant descent
