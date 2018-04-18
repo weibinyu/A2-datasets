@@ -11,20 +11,31 @@ plot(X2,y,'bx')
 hold off
 ylim([-1,2])
 
-%% feature mapping
+%% plot using gradient descent
 
-d = 5;
+d = 1;
 B = initB(d);
 mapped = mapFeature(X1,X2,d);
 
-[beta,itera] = GD(mapped,y,B,0.01);
-plot2dContour(beta,mapped,y,d);
+%[beta,itera,cost] = GD(mapped,y,B,0.01);
+%plot2dContour(beta,mapped,y,d);
 
+
+%% plot using fminunc
+for i=1:9
+d = i;
+B = initB(d);
+mapped = mapFeature(X1,X2,d);
+fun = @(B)((-1)/size(mapped,1))*((y.')*log(a2.sigmoid(mapped*B))+((1-y).')*log(1-a2.sigmoid(mapped*B)));
 %options = optimset('GradObj', 'on', 'MaxIter', 1000,'Display','on');
-%[theta, final_cost] = fminunc(@(t)(logCost(t, mapped, y)), init_beta, options);
+[theta, final_cost] = fminunc(fun, B);
+subplot(3,3,i)
+plot2dContour(theta,mapped,y,d)
+title("degree is "+ i)
+end
 
 %% gradiant descent
-function [beta,itera] = GD(X,y,B,a)
+function [beta,itera,cost] = GD(X,y,B,a)
 cost = calculateC(X,y,B);
 itera = 0;
 while true
