@@ -2,8 +2,7 @@ a2.clear()
 load('GPUbenchmark.csv')
 
 %% ploting all data
-X = GPUbenchmark;
-X(:,7)=[];
+X = GPUbenchmark(:,1:6);
 y = GPUbenchmark(:,7);
 for i=1:6
     subplot(2,3,i)
@@ -14,7 +13,7 @@ end
 B = a2.calcB(X,y);
 
 %% calculate prediction
-X1=[2432; 1607; 1683; 8; 8; 256];
+X1=[1;2432; 1607; 1683; 8; 8; 256];
 pred = predict(X1,B);
 % the error is because of the linje regressional nature, because the
 % data is not only integer so there could be errors
@@ -38,8 +37,8 @@ end
 %% prediction
 function pre = predict(X,B)
 pre = B(1,1);
-for i=1:size(X,1)
-   pre = pre+(B(i+1,1)*X(i,1));
+for i=2:size(X,1)
+   pre = pre+(B(i,1)*X(i,1));
 end
 
 end
