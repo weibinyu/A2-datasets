@@ -120,10 +120,7 @@ function itera = calcIterationWN(X,y,a)
 n = length(X);
 M = mean(X);
 S = std(X);
-XX = ones(n,1);
-for i=1:length(X)
-    XX(i) = (X(i)-M)/S;
-end
+XX = a2.normalize(X);
 B = a2.calcB(XX,y);
 XX=[ones(n,1),XX];
 NC = J(XX,y,B);
