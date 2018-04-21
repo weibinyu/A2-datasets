@@ -48,16 +48,7 @@ function [p,itera] = calcIterationWN(X,y,a)
 n = length(X);
 M = mean(X);
 S = std(X);
-XX = [ones(n,1),ones(n,1),ones(n,1),ones(n,1),ones(n,1),ones(n,1)];
-for i=1:size(X,1)
-    XX(i,1) = (X(i,1)-M(1))/S(1);
-    XX(i,2) = (X(i,2)-M(2))/S(2);
-    XX(i,3) = (X(i,3)-M(3))/S(3);
-    XX(i,4) = (X(i,4)-M(4))/S(4);
-    XX(i,5) = (X(i,5)-M(5))/S(5);
-    XX(i,6) = (X(i,6)-M(6))/S(6);    
-end
-
+XX = a2.normalize(X);
 B = a2.calcB(XX,y);
 XX = [ones(n,1),XX];
 NC = J(XX,y,B);

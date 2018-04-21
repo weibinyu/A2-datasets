@@ -28,7 +28,7 @@ testE = calculateE(test,B);
 %% function
 function [beta,itera,cost] = findB(X,y,a)
 n = length(X);
-XX = [ones(n,1),normalize(X)];
+XX = [ones(n,1),a2.normalize(X)];
 beta = zeros(10,1);
 itera = 0;
 iterList = [];
@@ -57,17 +57,6 @@ end
 %% cost function
 function cost = calculateC(X,y,B)
 cost = ((-1)/size(X,1))*((y.')*log(a2.sigmoid(X*B))+((1-y).')*log(1-a2.sigmoid(X*B)));
-end
-
-%% normalization
-function norm = normalize(X)
-M = mean(X);
-S = std(X);
-XX = X;
-for i=1:size(X,1)
-   XX(i,:) = (XX(i,:)-M)./S;
-end
-    norm = XX;
 end
 
 %% function error calculation
